@@ -6,4 +6,4 @@ Heavely inspired by Jesse Lawson's tutorial:https://jesselawson.org/rust/getting
 
 - [ ] Apply DRY principles to the tags
 - [ ] Add support for more than one character flags
-- [ ] Add support for <em> and <strong>
+- [ ] Add support for "<em>" and "<strong>"
