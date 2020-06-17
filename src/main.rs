@@ -2,6 +2,19 @@ use std::path::Path;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Write, Error};
 
+fn check_tag<'a>(active: &'a mut bool, content: &'a str) -> &'a str {
+    match active {
+        true => {
+            *active = false;
+            content
+        },
+        false => {
+            *active = true;
+            content
+        },
+    }
+}
+
 fn parse_markdown_file(filename: &str) -> Result<(), Error> {
     print_short_banner();
     println!("[ INFO ] Trying to parse {}...", filename);
@@ -25,43 +38,27 @@ fn parse_markdown_file(filename: &str) -> Result<(), Error> {
 
         match first_char.pop() {
             Some('#') => {
-                if ptag {
-                    ptag = false;
-                    output_line.push_str("</p>\n");
-                }
-
-                if htag {
-                    htag = false;
-                    output_line.push_str("</h1>\n");
-                }
-
-                htag = true;
-                output_line.push_str("<h1>");
-                output_line.push_str(&line_content[2..]); // get all but first two characters
+                output_line.push_str(check_tag(&mut !htag, "<h1>"));
+                output_line.push_str(&line_content[2..]);
+                output_line.push_str(check_tag(&mut htag, "</h1>\n"));
             },
             _ => {
-                if !ptag {
-                    ptag = true;
-                    output_line.push_str("<p>");
+                match line_content.is_empty() {
+                    true => output_line.push_str("\n"),
+                    false => {
+                        output_line.push_str(check_tag(&mut ptag, "<p>"));
+                        output_line.push_str(&line_content);
+                        output_line.push_str(check_tag(&mut ptag, "</p>\n"));
+                    }
                 }
-
-                output_line.push_str(&line_content);
             }
         };
-        if ptag {
-            ptag = false;
-            output_line.push_str("</p>\n");
-        }
-
-        if htag {
-            htag = false;
-            output_line.push_str("</h1>\n");
-        }
 
         if output_line != "<p></p>\n" {
             tokens.push(output_line);
         }
     }
+    
     let mut output_filename = String::from(&filename[..filename.len() - 3]);
     output_filename.push_str(".html");
     let mut output_file = File::create(output_filename)?;
