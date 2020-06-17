@@ -1,4 +1,4 @@
-# Tiny Markdown compiler
+# Tiny Markdown Compiler
 Tiny markdown compiler that translates markdown to HTML.\
 Heavely inspired by Jesse Lawson's tutorial:https://jesselawson.org/rust/getting-started-with-rust-by-building-a-tiny-markdown-compiler/
 
