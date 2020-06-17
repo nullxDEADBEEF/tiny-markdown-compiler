@@ -100,3 +100,15 @@ fn main() -> Result<(), Error> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn correct_header() {
+        let mut bool_change = true;
+        assert_eq!("<h1>", check_tag(&mut bool_change, "<h1>"));
+        assert_eq!(false, bool_change);
+    }
+}
