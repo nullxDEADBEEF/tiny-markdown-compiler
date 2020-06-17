@@ -58,7 +58,7 @@ fn parse_markdown_file(filename: &str) -> Result<(), Error> {
             output_line.push_str("</h1>\n");
         }
 
-        if output_line != "<p></p>\n".to_string() {
+        if output_line != "<p></p>\n" {
             tokens.push(output_line);
         }
     }
@@ -92,9 +92,6 @@ fn print_long_banner() {
     println!("Written by: {}", env!("CARGO_PKG_AUTHORS"));
     println!("Homepage: {}", env!("CARGO_PKG_HOMEPAGE"));
     println!("Usage: tinymd <somefile>.md");
-}
-
-fn usage() {
 }
 
 fn main() -> Result<(), Error> {
