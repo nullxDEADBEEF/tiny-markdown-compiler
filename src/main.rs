@@ -43,12 +43,13 @@ fn parse_markdown_file(filename: &str) -> Result<(), Error> {
                 output_line.push_str(check_tag(&mut htag, "</h1>\n"));
             },
             _ => {
-                if !line_content.is_empty() {
-                    output_line.push_str(check_tag(&mut ptag, "<p>"));
-                    output_line.push_str(&line_content);
-                    output_line.push_str(check_tag(&mut ptag, "</p>\n"));
-                } else {
-                    output_line.push_str("\n");
+                match line_content.is_empty() {
+                    true => output_line.push_str("\n"),
+                    false => {
+                        output_line.push_str(check_tag(&mut ptag, "<p>"));
+                        output_line.push_str(&line_content);
+                        output_line.push_str(check_tag(&mut ptag, "</p>\n"));
+                    }
                 }
             }
         };
