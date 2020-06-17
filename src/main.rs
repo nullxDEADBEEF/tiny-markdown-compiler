@@ -3,15 +3,12 @@ use std::fs::File;
 use std::io::{BufRead, BufReader, Write, Error};
 
 fn check_tag<'a>(active: &'a mut bool, content: &'a str) -> &'a str {
-    match active {
-        true => {
-            *active = false;
-            content
-        },
-        false => {
-            *active = true;
-            content
-        },
+    if *active {
+        *active = false;
+        content
+    } else {
+        *active = true;
+        content
     }
 }
 
@@ -43,13 +40,12 @@ fn parse_markdown_file(filename: &str) -> Result<(), Error> {
                 output_line.push_str(check_tag(&mut htag, "</h1>\n"));
             },
             _ => {
-                match line_content.is_empty() {
-                    true => output_line.push_str("\n"),
-                    false => {
-                        output_line.push_str(check_tag(&mut ptag, "<p>"));
-                        output_line.push_str(&line_content);
-                        output_line.push_str(check_tag(&mut ptag, "</p>\n"));
-                    }
+                if line_content.is_empty() {
+                    output_line.push_str("\n")
+                } else {
+                    output_line.push_str(check_tag(&mut ptag, "<p>"));
+                    output_line.push_str(&line_content);
+                    output_line.push_str(check_tag(&mut ptag, "</p>\n"));
                 }
             }
         };
