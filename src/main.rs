@@ -38,18 +38,20 @@ fn parse_markdown_file(filename: &str) -> Result<(), Error> {
 
         match first_char.pop() {
             Some('#') => {
-                output_line.push_str(check_tag(&mut ptag, "</p>\n"));
-                output_line.push_str(check_tag(&mut !htag, "</h1>\n"));
                 output_line.push_str(check_tag(&mut !htag, "<h1>"));
                 output_line.push_str(&line_content[2..]);
+                output_line.push_str(check_tag(&mut htag, "</h1>\n"));
             },
             _ => {
-                output_line.push_str(check_tag(&mut ptag, "<p>"));
-                output_line.push_str(&line_content);
+                if !line_content.is_empty() {
+                    output_line.push_str(check_tag(&mut ptag, "<p>"));
+                    output_line.push_str(&line_content);
+                    output_line.push_str(check_tag(&mut ptag, "</p>\n"));
+                } else {
+                    output_line.push_str("\n");
+                }
             }
         };
-        output_line.push_str(check_tag(&mut !htag, "</h1>\n"));
-        output_line.push_str(check_tag(&mut !ptag, "</p>\n"));
 
         if output_line != "<p></p>\n" {
             tokens.push(output_line);
